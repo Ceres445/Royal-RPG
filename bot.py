@@ -33,7 +33,7 @@ class Helper(commands.AutoShardedBot):
     async def setup(cls, **kwargs):
         bot = cls()
         try:
-            await bot.start("NzI3NDI4MTUxNjAwMzQ5MTk0.XvrsSA.Wnds0zXnTfmcBiVz1LBGYwwsTTk", **kwargs)
+            await bot.start(token, **kwargs)
         except KeyboardInterrupt:
             await bot.close()
 
