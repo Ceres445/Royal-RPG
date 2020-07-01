@@ -1,0 +1,6 @@
+{"Primary Weapon": ["Dagger", "Sword", "Bow and Arrow", "Axe", "Scythe"],
+"Secondary Weapon":  ["Futuristic Whip", "Futuristic Hammer", "Gun", "Rocket", "Nuke"],
+"Team":  ["Good", "Evil", "Neutral"],
+"Pet": ["Bee Swarm", "Bear", "Crow", "Wolf", "Jackal"],
+"Ability":  ["Air", "Water", "Earth", "Fire", "Lightning"]
+}
