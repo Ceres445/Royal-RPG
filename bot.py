@@ -36,6 +36,7 @@ class Helper(commands.AutoShardedBot):
             with open('token.json', 'r') as f:
                 token = json.load(f)
             await bot.start(token['token'], **kwargs)
+
         except KeyboardInterrupt:
             await bot.close()
 
