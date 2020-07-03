@@ -9,9 +9,9 @@ def start(key, value):
     embed = discord.Embed(title='CHARACTER CREATION', description=description, color=3837)
     return embed
 
-def profile(key, list):
-    description= str()
-    for i , j in key, list:
-        description += f"{i}: {j} \n"
+def profile(name, key, list):
+    description= f"Name: {name} \n"
+    for i in range(5):
+        description += f"{key[i]}: {list[i]} \n"
     embed = discord.Embed(title='Character Profile', description=description, color=3837)
     return embed

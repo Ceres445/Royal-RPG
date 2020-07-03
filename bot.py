@@ -1,7 +1,7 @@
 from discord.ext import commands
 import discord
 
-
+import json
 from aiohttp import ClientSession
 import datetime
 import asyncio
@@ -33,7 +33,9 @@ class Helper(commands.AutoShardedBot):
     async def setup(cls, **kwargs):
         bot = cls()
         try:
-            await bot.start("NzI3NDI4MTUxNjAwMzQ5MTk0.XvrsSA.Wnds0zXnTfmcBiVz1LBGYwwsTTk", **kwargs)
+            with open('token.json', 'r') as f:
+                token = json.load(f)
+            await bot.start(token['token'], **kwargs)
         except KeyboardInterrupt:
             await bot.close()
 
