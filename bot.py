@@ -8,10 +8,10 @@ from aiohttp import ClientSession
 import datetime
 import asyncio
 from cogs.utils.database import DataBase
-
 initial_cogs = [
     'cogs.currency'
 ]
+
 
 class Helper(commands.AutoShardedBot):
     def __init__(self, **kwargs):
@@ -19,6 +19,7 @@ class Helper(commands.AutoShardedBot):
         self.session = ClientSession(loop=self.loop)
         self.start_time = datetime.datetime.utcnow()
         self.clean_text = commands.clean_content(escape_markdown=True, fix_channel_mentions=True)
+        self.db = None
 
     """"  Events  """
 
@@ -35,9 +36,9 @@ class Helper(commands.AutoShardedBot):
     async def setup(cls, **kwargs):
         bot = cls()
         try:
-             with open('token.json', 'r') as f:
+            with open('cogs/json/token.json', 'r') as f:
                 token = json.load(f)
-             await bot.start(token['token'], **kwargs)
+            await bot.start(token['token'], **kwargs)
 
         except KeyboardInterrupt:
             await bot.close()
