@@ -28,7 +28,7 @@ class Game(commands.Cog):
         if info:
             await ctx.send("you have already completed character creation")
         else:
-            with open(file='start.json', mode='r') as f:
+            with open(file='cogs/json/start.json', mode='r') as f:
                 data = json.load(f)
             loadout = []
             for key, value in data.items():
@@ -89,6 +89,9 @@ class Game(commands.Cog):
             else:
                 await ctx.send("phew dodged a bullet")
 
+    @commands.command(name = 'inv', aliases=["inventory"])
+    async def inv(self, ctx):
+        info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
 
 def setup(bot):
     bot.add_cog(Game(bot))
