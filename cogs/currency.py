@@ -85,20 +85,20 @@ class Game(commands.Cog):
     @commands.command(name='reset')
     async def reset(self, ctx):
         """resets all your character data"""
-        def in_channel(ok):
-            if ok.channel.id == ctx.channel.id and ok.author == ctx.author:
-                return True
-            else:
-                return False
+        def check(reaction, user):
+            return user == ctx.message.author
+        
         info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
         if not info:
             await ctx.send("you don't have a character created")
         else:
-            await ctx.send("are you sure (yes/no) if you dont reply it will be cancelled")
-            message = await self.bot.wait_for('message', timeout=30.0, check=in_channel)
-            if message.content.lower == 'yes':
+            await ctx.send("Are you sure?")
+            await message.add_reaction(":thumbsup:")
+			await message.add_reaction(":thumbsdown:")
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=in_channel)
+            if str(reaction.emoji) == ":thumbsup:":
                 await self.bot.db.execute("DELETE from user_data where id = $1", ctx.author.id)
-                await ctx.send("i have deleted your character")
+                await ctx.send("Your character has been deleted")
             else:
                 await ctx.send("phew dodged a bullet")
 
