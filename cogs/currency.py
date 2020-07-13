@@ -1,24 +1,37 @@
 from discord.ext import commands
 import json
 
-from .utils.embedmanager import start, profile
-from discord.ext.commands.errors import BadArgument
+from .utils.embedmanager import start, profile, inv, shop
+from discord.ext.commands.errors import BadArgument, MissingPermissions
 from asyncio import TimeoutError
 
 class Game(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        with open(file="cogs/json/start.json", mode='r') as f:
+            starter = json.load(f)
+        with open("cogs/json/items.json", "r") as f:
+            items = json.load(f)
+        self.items = items
+        self.starter = starter
 
     @commands.command(name='shop')
-    async def shop(self, ctx):
-        await ctx.send('aye shop')
+    async def shop(self, ctx, n: int = None):
+        """Shows the items you can buy"""
+        if n is None:
+            n = 1
+        key = list(self.items.keys())[n-1]
+        await ctx.send(embed=shop(key, self.items[key]))
 
-    @commands.command(name='bal')
+
+    @commands.command(name='bal', aliases=['balance'])
     async def bal(self, ctx):
+        """Shows your balance"""
         await ctx.send('you bal is 0')
 
     @commands.command(name='start')
     async def start(self, ctx):
+        """starts your game by creating your character"""
         def in_channel(ok):
             if ok.channel.id == ctx.channel.id and ok.author == ctx.author:
                 return True
@@ -28,8 +41,7 @@ class Game(commands.Cog):
         if info:
             await ctx.send("you have already completed character creation")
         else:
-            with open(file='cogs/json/start.json', mode='r') as f:
-                data = json.load(f)
+            data = self.starter
             loadout = []
             for key, value in data.items():
                 await ctx.send(embed=start(key, value))
@@ -55,12 +67,12 @@ class Game(commands.Cog):
 
     @commands.command(name='profile')
     async def profile(self, ctx):
+        """Shows your profile"""
         info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
         if not info:
             await ctx.send("you have not completed your character creation, use `+start` to create your character")
         else:
-            with open(file='start.json', mode='r') as f:
-                data = json.load(f)
+            data = self.starter
             key = list(data.keys())
             loadout = list()
             for i in range(5):
@@ -72,6 +84,7 @@ class Game(commands.Cog):
 
     @commands.command(name='reset')
     async def reset(self, ctx):
+        """resets all your character data"""
         def in_channel(ok):
             if ok.channel.id == ctx.channel.id and ok.author == ctx.author:
                 return True
@@ -89,9 +102,14 @@ class Game(commands.Cog):
             else:
                 await ctx.send("phew dodged a bullet")
 
-    @commands.command(name = 'inv', aliases=["inventory"])
+    @commands.command(name='inv', aliases=["inventory"])
     async def inv(self, ctx):
+        """Shows your items"""
         info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
+        data = self.starter
+        weapons = [data["Primary Weapon"][info['loadout'][0]], data["Secondary Weapon"][info['loadout'][1]]]
+        await ctx.send(embed=inv(weapons))
+
 
 def setup(bot):
     bot.add_cog(Game(bot))

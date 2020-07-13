@@ -1,0 +1,19 @@
+{
+  "Reviving and Healing Potions" : {
+                                        "Instant Revival Potion" : [5000, 1, "Instantly Revives you on the spot when you use it! No loss of zeni or items! Full health too!"],
+                                        "Mediocre Revival Potion": [2000, 2, "Instantly Revives you on the spot, but with 1 hp. Heals 1 hp per minute until full. Doesn't work if player is taking damage while healing."],
+                                        "Simple Revival Potion"  : [1000, 3, "Revives you on the spot, but with 1 hp."],
+                                        "Defibrillators"         : [600,  4, "Revives you on the spot, but with 1 hp. 60% chance of loss of Zeni or items."],
+                                        "Super Health Potion"    : [3000, 5, "Restores your health entirely and immediately."],
+                                        "Mediocre Health Potion" : [1500, 6, "Restores 50% of your total health immediately"],
+                                        "Simple Health Potion"   : [500,  7, "Restores 25% of your total health immediately"],
+                                        "Medicine"               : [450,  8, "Restores full health after a while(2 hp/turn)"]
+                                   },
+  "Strengthening and Boosting Potions": {
+                                            "Goldy Strength Potion"     : [1e4, 9,  "It multiplies your strength by 10 times! Lasts for an entire battle."],
+                                            "Demi-godly Strength Potion": [5000,10, "It multiplies your strength by 5 times! Lasts for an entire battle."],
+                                            "Giant's Strength Potion"   : [1000,11, "It multiplies your strength by 3 times! Lasts for 10 turns, or if the battle ends."],
+                                            "Steroids"                  : [500, 12, "It has a 75% chance of multiplying your strength anywhere between 10 times, but also a 25% chance of killing you."],
+                                            "Beer"                      : [200, 13, "It has a 90% chance of multiplying your strength anywhere up to 8 times, and after 6 turns, your strength turns back to normal and decreases by 20%, and your speed and precision also decrease by 20%. There's a 10% chance that the beer doesn't go very well, and kills you."]
+                                        }
+}
