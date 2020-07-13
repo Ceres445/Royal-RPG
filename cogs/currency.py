@@ -94,10 +94,10 @@ class Game(commands.Cog):
         else:
             await ctx.send("Are you sure?")
             await message.add_reaction(":thumbsup:")
-			await message.add_reaction(":thumbsdown:")
+	    await message.add_reaction(":thumbsdown:")
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=in_channel)
             if str(reaction.emoji) == ":thumbsup:":
-                await self.bot.db.execute("DELETE from user_data where id = $1", ctx.author.id)
+            	await self.bot.db.execute("DELETE from user_data where id = $1", ctx.author.id)
                 await ctx.send("Your character has been deleted")
             else:
                 await ctx.send("phew dodged a bullet")
