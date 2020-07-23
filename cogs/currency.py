@@ -16,7 +16,7 @@ class Game(commands.Cog):
         self.items = items
         self.starter = starter
 
-    @commands.command(name='shop', aliases = ['store'])
+    @commands.command(name='shop', aliases=['store'])
     async def shop(self, ctx, n: int = None):
         """Shows the items you can buy"""
         if n is None:
