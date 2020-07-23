@@ -5,6 +5,7 @@ from .utils.embedmanager import start, profile, inv, shop
 from discord.ext.commands.errors import BadArgument, MissingPermissions
 from asyncio import TimeoutError
 
+
 class Game(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -20,9 +21,8 @@ class Game(commands.Cog):
         """Shows the items you can buy"""
         if n is None:
             n = 1
-        key = list(self.items.keys())[n-1]
+        key = list(self.items.keys())[n - 1]
         await ctx.send(embed=shop(key, self.items[key]))
-
 
     @commands.command(name='bal', aliases=['balance'])
     async def bal(self, ctx):
@@ -32,11 +32,13 @@ class Game(commands.Cog):
     @commands.command(name='start')
     async def start(self, ctx):
         """starts your game by creating your character"""
+
         def in_channel(ok):
             if ok.channel.id == ctx.channel.id and ok.author == ctx.author:
                 return True
             else:
                 return False
+
         info = await self.bot.db.fetch("SELECT * FROM user_data where id = $1", ctx.author.id)
         if info:
             await ctx.send("you have already completed character creation")
@@ -55,7 +57,7 @@ class Game(commands.Cog):
                 else:
                     chosen = int(message.content) - 1
                     loadout.append(chosen)
-                    await ctx.send(f"you have chosen {chosen+ 1}. {data[key][chosen]}")
+                    await ctx.send(f"you have chosen {chosen + 1}. {data[key][chosen]}")
             print(loadout)
             await self.bot.db.execute("INSERT INTO user_data (id, loadout) VALUES ($1, $2)", ctx.author.id, loadout)
             await ctx.send("your creation is complete")
@@ -85,20 +87,21 @@ class Game(commands.Cog):
     @commands.command(name='reset')
     async def reset(self, ctx):
         """resets all your character data"""
-        def in_channel(ok):
-            if ok.channel.id == ctx.channel.id and ok.author == ctx.author:
-                return True
-            else:
-                return False
+
+        def check(reaction, user):
+            return user == ctx.message.author
+
         info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
         if not info:
             await ctx.send("you don't have a character created")
         else:
-            await ctx.send("are you sure (yes/no) if you dont reply it will be cancelled")
-            message = await self.bot.wait_for('message', timeout=30.0, check=in_channel)
-            if message.content.lower == 'yes':
+            await ctx.send("Are you sure?")
+            await ctx.message.add_reaction(":thumbsup:")
+            await ctx.message.add_reaction(":thumbsdown:")
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+            if str(reaction.emoji) == ":thumbsup:":
                 await self.bot.db.execute("DELETE from user_data where id = $1", ctx.author.id)
-                await ctx.send("i have deleted your character")
+                await ctx.send("Your character has been deleted")
             else:
                 await ctx.send("phew dodged a bullet")
 
