@@ -58,7 +58,6 @@ class Game(commands.Cog):
                     chosen = int(message.content) - 1
                     loadout.append(chosen)
                     await ctx.send(f"you have chosen {chosen + 1}. {data[key][chosen]}")
-            print(loadout)
             await self.bot.db.execute("INSERT INTO user_data (id, loadout) VALUES ($1, $2)", ctx.author.id, loadout)
             await ctx.send("your creation is complete")
 
@@ -95,11 +94,11 @@ class Game(commands.Cog):
         if not info:
             await ctx.send("you don't have a character created")
         else:
-            await ctx.send("Are you sure?")
-            await ctx.message.add_reaction(":thumbsup:")
-            await ctx.message.add_reaction(":thumbsdown:")
+            message = await ctx.send("Are you sure?")
+            await message.add_reaction(("\U0001f44d"))
+            await message.add_reaction("\U0001f44e")
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-            if str(reaction.emoji) == ":thumbsup:":
+            if str(reaction.emoji) == "\U0001f44d":
                 await self.bot.db.execute("DELETE from user_data where id = $1", ctx.author.id)
                 await ctx.send("Your character has been deleted")
             else:
@@ -109,8 +108,7 @@ class Game(commands.Cog):
     async def inv(self, ctx):
         """Shows your items"""
         info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
-        data = self.starter
-        weapons = [data["Primary Weapon"][info['loadout'][0]], data["Secondary Weapon"][info['loadout'][1]]]
+        weapons = [self.starter["Primary Weapon"][info['loadout'][0]], self.starter["Secondary Weapon"][info['loadout'][1]]]
         await ctx.send(embed=inv(weapons))
 
 
