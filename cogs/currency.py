@@ -27,7 +27,11 @@ class Game(commands.Cog):
     @commands.command(name='bal', aliases=['balance'])
     async def bal(self, ctx):
         """Shows your balance"""
-        await ctx.send('you bal is 0')
+        data = await self.bot.db.fetchrow("SELECT * FROM user_data WHERE id = $1", ctx.author.id)
+        if not data:
+            await ctx.send("you have not completed your character creation, use `+start` to create your character")
+        else:
+            await ctx.send(f"your balance is : {data['money']}")
 
     @commands.command(name='start')
     async def start(self, ctx):
@@ -58,7 +62,8 @@ class Game(commands.Cog):
                     chosen = int(message.content) - 1
                     loadout.append(chosen)
                     await ctx.send(f"you have chosen {chosen + 1}. {data[key][chosen]}")
-            await self.bot.db.execute("INSERT INTO user_data (id, loadout) VALUES ($1, $2)", ctx.author.id, loadout)
+            await self.bot.db.execute("INSERT INTO user_data (id, loadout, money) VALUES ($1, $2, 1000)",
+                                      ctx.author.id, loadout)
             await ctx.send("your creation is complete")
 
     @start.error
@@ -95,7 +100,7 @@ class Game(commands.Cog):
             await ctx.send("you don't have a character created")
         else:
             message = await ctx.send("Are you sure?")
-            await message.add_reaction(("\U0001f44d"))
+            await message.add_reaction("\U0001f44d")
             await message.add_reaction("\U0001f44e")
             reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
             if str(reaction.emoji) == "\U0001f44d":
@@ -108,8 +113,17 @@ class Game(commands.Cog):
     async def inv(self, ctx):
         """Shows your items"""
         info = await self.bot.db.fetchrow("select * from user_data where id = $1", ctx.author.id)
-        weapons = [self.starter["Primary Weapon"][info['loadout'][0]], self.starter["Secondary Weapon"][info['loadout'][1]]]
+        weapons = [self.starter["Primary Weapon"][info['loadout'][0]],
+                   self.starter["Secondary Weapon"][info['loadout'][1]]]
         await ctx.send(embed=inv(weapons))
+
+    @commands.command()
+    async def buy(self, ctx, arg: int = None):
+        #make here and remove comment
+        if arg is None:
+            await ctx.send('what u want to buy')
+
+
 
 
 def setup(bot):
